@@ -13,6 +13,6 @@ private:
     void handleCustomerMenu();
     void handleSellerMenu();
 public:
-    ApplicationController();
+    //ApplicationController();
     void run();  
 };
