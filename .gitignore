@@ -1,0 +1,9 @@
+# Ignore build outputs
+*.exe
+*.obj
+*.o
+*.out
+*.log
+
+# Ignore Visual Studio Code settings
+.vscode/
