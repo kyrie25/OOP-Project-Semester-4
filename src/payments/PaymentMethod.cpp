@@ -1,4 +1,4 @@
-#include "Payment.h"
+#include "PaymentMethod.h"
 #include <iostream>
 
 PaymentMethod::PaymentMethod(const std::string& name) : methodName(name) {}
