@@ -1,5 +1,7 @@
 #include "Seller.h"
 
+Seller::Seller(const std::string& username, const std::string& password) : User(username, password) {}
+
 void Seller::addProduct(Product* product, int amount)
 {
     for (auto& item : myProduct) {
