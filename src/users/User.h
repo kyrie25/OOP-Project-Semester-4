@@ -11,4 +11,6 @@ public:
     User(const std::string& username, const std::string& password);
     std::string getUsername();
     bool checkPassword(const std::string& password);
+
+    virtual std::string getUserType() const = 0;
 };

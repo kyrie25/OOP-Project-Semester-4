@@ -135,8 +135,12 @@ void ApplicationController::handleLogin()
 				cout << "\t\t\t\t\t\t  Login successful!\n";
 				system("pause");
 
-				// Here you can redirect to the customer or seller menu based on the user type
-				// For now, we just return to the main menu
+				if (user->getUserType() == "Customer") {
+					handleCustomerMenu();
+				} else if (user->getUserType() == "Seller") {
+					handleSellerMenu();
+				} 
+					
 				return;
 			}
 		}
@@ -146,6 +150,16 @@ void ApplicationController::handleLogin()
 			return;
 		}
 	}
+}
+
+void ApplicationController::handleCustomerMenu()
+{
+	
+}
+
+void ApplicationController::handleSellerMenu()
+{
+	
 }
 
 void ApplicationController::run()

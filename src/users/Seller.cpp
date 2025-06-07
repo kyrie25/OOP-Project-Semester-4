@@ -34,3 +34,8 @@ std::vector<Product*> Seller::getMyProduct()
     }
     return products;
 }
+
+std::string Seller::getUserType() const
+{
+    return "Seller";
+}

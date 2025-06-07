@@ -12,6 +12,8 @@ public:
 
     void addProduct(Product* product, int amount);
     void removeProduct(std::string name);
+    
+    std::string getUserType() const;
 
     std::vector<Product*> getMyProduct();
 };

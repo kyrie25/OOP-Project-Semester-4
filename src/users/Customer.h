@@ -10,5 +10,7 @@ public:
     void addPaymentMethod(PaymentMethod* method);
     void removePaymentMethod(const std::string& methodName);
 
+    std::string getUserType() const override;
+
     std::vector<PaymentMethod*> getPaymentMethods() const;
 };

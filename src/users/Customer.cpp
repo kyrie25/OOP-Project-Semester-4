@@ -21,3 +21,7 @@ void Customer::removePaymentMethod(const std::string& methodName) {
         }
     }
 }
+
+std::string Customer::getUserType() const {
+    return "Customer";
+}
