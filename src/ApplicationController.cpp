@@ -155,6 +155,8 @@ void ApplicationController::handleLogin()
 
 void ApplicationController::handleCustomerMenu(User* user)
 {
+	Customer* customer = dynamic_cast<Customer*>(user);
+
 	int option = 1;
 	bool quit = false;
 
@@ -169,9 +171,9 @@ void ApplicationController::handleCustomerMenu(User* user)
 			cout << "\t\t\t\t\t\t       SHOP\n\n";
 
 		if (option == 2)
-			cout << "\t\t\t\t\t    \x1B[33m  -* ADD PAYMENT METHOD *-\33[0m\n\n";
+			cout << "\t\t\t\t\t \x1B[33m  -* MANAGE PAYMENT METHOD *-\33[0m\n\n";
 		else
-			cout << "\t\t\t\t\t         ADD PAYMENT METHOD\n\n";
+			cout << "\t\t\t\t\t      MANAGE PAYMENT METHOD\n\n";
 
 		if (option == 3)
 			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
@@ -207,6 +209,8 @@ void ApplicationController::handleCustomerMenu(User* user)
 
 void ApplicationController::handleSellerMenu(User* user)
 {
+	Seller* seller = dynamic_cast<Seller*>(user);
+
 	int option = 1;
 	bool quit = false;
 	while (!quit)
@@ -255,6 +259,62 @@ void ApplicationController::handleSellerMenu(User* user)
 		}
 	}
 
+}
+
+void ApplicationController::handlePaymentMethod(User* user)
+{
+	Customer* customer = dynamic_cast<Customer*>(user);
+
+	int option = 1;
+	bool quit = false;
+
+	while (!quit)
+	{
+		system("cls");
+		cout << "\n\n\n\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+		if (option == 1)
+			cout << "\t\t\t\t\t    \x1B[33m  -* ADD PAYMENT METHOD *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t         ADD PAYMENT METHOD\n\n";
+
+		if (option == 2)
+			cout << "\t\t\t\t\t    \x1B[33m  -* REMOVE PAYMENT METHOD *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t         REMOVE PAYMENT METHOD\n\n";
+
+		if (option == 3)
+			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t\t       BACK\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n";
+
+		//get option
+		char key = _getch();
+		if (key == 'w' && option > 1) {
+			option--;
+		}
+		else if (key == 's' && option < 3) {
+			option++;
+		}
+		else if (key == ' ') {
+			switch (option) {
+			case 1:
+				system("cls");
+				// Add payment method feature
+				
+				break;
+			case 2:
+				system("cls");
+				// Remove payment method feature
+				
+				break;
+			case 3:
+				quit = true;
+				break;
+			}
+		}
+	}
 }
 
 void ApplicationController::run()

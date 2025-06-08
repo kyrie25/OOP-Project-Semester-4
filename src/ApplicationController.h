@@ -9,7 +9,10 @@ private:
 
     void handleLogin();
     void handleRegister();
+
     void handleCustomerMenu(User* user);
+    void handlePaymentMethod(User* user);
+
     void handleSellerMenu(User* user);
 public:
     //ApplicationController();
