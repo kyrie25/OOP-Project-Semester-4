@@ -154,12 +154,106 @@ void ApplicationController::handleLogin()
 
 void ApplicationController::handleCustomerMenu()
 {
-	
+	int option = 1;
+	bool quit = false;
+
+	while (!quit)
+	{
+		system("cls");
+		cout << "\n\n\n\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+		if (option == 1)
+			cout << "\t\t\t\t\t\t \x1B[33m  -*  SHOP  *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t\t       SHOP\n\n";
+
+		if (option == 2)
+			cout << "\t\t\t\t\t    \x1B[33m  -* ADD PAYMENT METHOD *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t         ADD PAYMENT METHOD\n\n";
+
+		if (option == 3)
+			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t\t       BACK\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n";
+
+		//get option
+		char key = _getch();
+		if (key == 'w' && option > 1) {
+			option--;
+		}
+		else if (key == 's' && option < 3) {
+			option++;
+		}
+		else if (key == ' ') {
+			switch (option) {
+			case 1:
+				cout << "\t\t\t\t\t\t  Shopping feature is not implemented yet.\n";
+				system("pause");
+				break;
+			case 2:
+				cout << "\t\t\t\t\t\t  Adding payment method feature is not implemented yet.\n";
+				system("pause");
+				break;
+			case 3:
+				quit = true;
+				break;
+			}
+		}
+	}
 }
 
 void ApplicationController::handleSellerMenu()
 {
-	
+	int option = 1;
+	bool quit = false;
+	while (!quit)
+	{
+		system("cls");
+		cout << "\n\n\n\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+		if (option == 1)
+			cout << "\t\t\t\t\t    \x1B[33m  -*  MANAGE PRODUCTS  *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t          MANAGE PRODUCTS\n\n";
+
+		if (option == 2)
+			cout << "\t\t\t\t\t    \x1B[33m  -* VIEW SALES REPORT *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t         VIEW SALES REPORT\n\n";
+
+		if (option == 3)
+			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t\t       BACK\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n";
+
+		//get option
+		char key = _getch();
+		if (key == 'w' && option > 1) {
+			option--;
+		}
+		else if (key == 's' && option < 3) {
+			option++;
+		}
+		else if (key == ' ') {
+			switch (option) {
+			case 1:
+				cout << "\t\t\t\t\t   Managing products feature is not implemented yet.\n";
+				system("pause");
+				break;
+			case 2:
+				cout << "\t\t\t\t   Viewing sales report feature is not implemented yet.\n";
+				system("pause");
+				break;
+			case 3:
+				quit = true;
+				break;
+			}
+		}
+	}
+
 }
 
 void ApplicationController::run()
