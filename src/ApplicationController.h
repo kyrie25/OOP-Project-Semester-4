@@ -7,10 +7,13 @@ class ApplicationController
 private:
     std::vector<User*> users;
 
+    std::vector<Product*> loadSellerProducts();
+
     void handleLogin();
     void handleRegister();
 
     void handleCustomerMenu(User* user);
+    void handleShopMenu(User* user);
     void handlePaymentMethod(User* user);
 
     void handleSellerMenu(User* user);
