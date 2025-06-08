@@ -209,8 +209,7 @@ void ApplicationController::handleCustomerMenu(User* user)
 		else if (key == ' ') {
 			switch (option) {
 			case 1:
-				cout << "\t\t\t\t\t\t  Shopping feature is not implemented yet.\n";
-				system("pause");
+				handleShopMenu(user);
 				break;
 			case 2:
 				cout << "\t\t\t\t\t\t  Adding payment method feature is not implemented yet.\n";
@@ -228,26 +227,66 @@ void ApplicationController::handleShopMenu(User* user)
 {
 	while (true) {
 		system("cls");
-		cout << "\n\n\n\n\n";
+		cout << "\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
 		cout << "\t\t\t\t\t\t \x1B[33m  -*  SHOP  *-\33[0m\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-		// Display products
+		// Display products and allow user to select a product
 		std::vector<Product*> products = loadSellerProducts();
+		
 		if (products.empty()) {
-			cout << "\t\t\t\t   No products available in the shop.\n";
-		} else {
-			for (const auto& product : products) {
-				product->display();
-			}
+			cout << "\t\t\t\t\t No products available in the shop.\n";
+			system("pause");
+			return;
 		}
 
-		cout << "\n\nPress any key to go back to the customer menu.";
-		char key = _getch();
-		if (key == 27) 
-		{ 
-			break;
+		cout << '\n';
+
+		for (size_t i = 0; i < products.size(); ++i) {
+			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i]->getName() 
+			     << " - Price: $" << products[i]->getPrice() << "\n";
+		}
+
+		cout << "\t\t\t\t\t " << products.size() + 1 << ". Back to menu\n";
+		cout << "\t\t\t\t\t Please select a product by number: ";
+		int choice;
+		cin >> choice;
+		cin.ignore(); 
+
+		if (choice < 1 || choice > products.size() + 1) {
+			cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
+			system("pause");
+			continue;
+		}
+		if (choice == products.size() + 1) {
+			return;
+		}
+
+		//display selected product details
+		system("cls");
+		cout << "\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+		cout << "\t\t\t\t\t\t \x1B[33m  -*  PRODUCT DETAILS  *-\33[0m\n\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n";
+
+		cout << '\n';
+
+		products[choice - 1]->display();
+		
+		//buy or back to shop menu
+		cout << "\n\t\t\t\t\t Would you like to buy this product? (y/n): ";
+		char buyChoice;
+		cin >> buyChoice;
+		cin.ignore();
+		if (buyChoice == 'y' || buyChoice == 'Y') {
+			//choose payment method
+
+		} else if (buyChoice == 'n' || buyChoice == 'N') {
+			// Back to shop menu
+			
+		} else {
+			
 		}
 	}
 }

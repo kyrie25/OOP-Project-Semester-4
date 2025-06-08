@@ -1,5 +1,6 @@
 #pragma once 
 #include "users/User.h"
+#include "products/Product.h"
 #include <string>
 #include <vector>
 class ApplicationController 
@@ -12,11 +13,14 @@ private:
     void handleLogin();
     void handleRegister();
 
-    void handleCustomerMenu(User* user);
-    void handleShopMenu(User* user);
-    void handlePaymentMethod(User* user);
+    void handleCustomerMenu(User* user); //view shop, buy product, manage payment methods
+    void handleShopMenu(User* user); //view products, buy products
+    void handlePaymentMethod(User* user); //add or remove payment methods
 
-    void handleSellerMenu(User* user);
+    void handleSellerMenu(User* user); //view products, add or remove products, view orders
+    void handleProduct(User* user); //add or remove products
+    void handleOrder(User* user); //view orders.
+
 public:
     //ApplicationController();
     void run();  
