@@ -136,9 +136,10 @@ void ApplicationController::handleLogin()
 				system("pause");
 
 				if (user->getUserType() == "Customer") {
-					handleCustomerMenu();
+
+					handleCustomerMenu(user);
 				} else if (user->getUserType() == "Seller") {
-					handleSellerMenu();
+					handleSellerMenu(user);
 				} 
 					
 				return;
@@ -152,7 +153,7 @@ void ApplicationController::handleLogin()
 	}
 }
 
-void ApplicationController::handleCustomerMenu()
+void ApplicationController::handleCustomerMenu(User* user)
 {
 	int option = 1;
 	bool quit = false;
@@ -204,7 +205,7 @@ void ApplicationController::handleCustomerMenu()
 	}
 }
 
-void ApplicationController::handleSellerMenu()
+void ApplicationController::handleSellerMenu(User* user)
 {
 	int option = 1;
 	bool quit = false;
