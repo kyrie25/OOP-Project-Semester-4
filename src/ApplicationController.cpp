@@ -1,6 +1,7 @@
 #include "ApplicationController.h"
 #include "users/UserFactory.h"
 #include "products/ProductFactory.h"
+#include "payments/PaymentMethodFactory.h"
 #include <conio.h>
 #include <iostream>
 #include <fstream>
@@ -250,7 +251,7 @@ void ApplicationController::handleCustomerMenu(User *user)
 				handleShopMenu(user);
 				break;
 			case 2:
-				cout << "\t\t\t\t\t\t  Adding payment method feature is not implemented yet.\n";
+				handlePaymentMethod(user);
 				system("pause");
 				break;
 			case 3:
@@ -363,63 +364,118 @@ void ApplicationController::handleShopMenu(User *user)
 	}
 }
 
-void ApplicationController::handlePaymentMethod(User *user)
+void ApplicationController::handlePaymentMethod(User* user)
 {
-	Customer *customer = dynamic_cast<Customer *>(user);
+    Customer* customer = dynamic_cast<Customer*>(user);
+    if (!customer) {
+        cout << "\t\t\t\t\t Error: Only customers can manage payment methods.\n";
+        system("pause");
+        return;
+    }
 
-	int option = 1;
-	bool quit = false;
+    int option = 1;
+    bool quit = false;
 
-	while (!quit)
-	{
-		system("cls");
-		cout << "\n\n\n\n\n";
-		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
-		if (option == 1)
-			cout << "\t\t\t\t\t    \x1B[33m  -* ADD PAYMENT METHOD *-\33[0m\n\n";
-		else
-			cout << "\t\t\t\t\t         ADD PAYMENT METHOD\n\n";
+    while (!quit)
+    {
+        system("cls");
+        cout << "\n\n\n\n\n";
+        cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+        if (option == 1)
+            cout << "\t\t\t\t\t    \x1B[33m  -* ADD PAYMENT METHOD *-\33[0m\n\n";
+        else
+            cout << "\t\t\t\t\t         ADD PAYMENT METHOD\n\n";
 
-		if (option == 2)
-			cout << "\t\t\t\t\t    \x1B[33m  -* REMOVE PAYMENT METHOD *-\33[0m\n\n";
-		else
-			cout << "\t\t\t\t\t         REMOVE PAYMENT METHOD\n\n";
+        if (option == 2)
+            cout << "\t\t\t\t\t    \x1B[33m  -* REMOVE PAYMENT METHOD *-\33[0m\n\n";
+        else
+            cout << "\t\t\t\t\t         REMOVE PAYMENT METHOD\n\n";
 
-		if (option == 3)
-			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
-		else
-			cout << "\t\t\t\t\t\t       BACK\n\n";
-		cout << "\t\t\t\t\t -----------====***====-----------\n";
+        if (option == 3)
+            cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
+        else
+            cout << "\t\t\t\t\t\t       BACK\n\n";
+        cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-		// get option
-		char key = _getch();
-		if ((key == 'w' || key == KEY_UP) && option > 1)
-		{
-			option--;
-		}
-		else if ((key == 's' || key == KEY_DOWN) && option < 3)
-		{
-			option++;
-		}
-		else if (key == ' ' || key == KEY_ENTER)
-		{
-			switch (option)
-			{
-			case 1:
-				system("cls");
-				// Add payment method feature
-				break;
-			case 2:
-				system("cls");
-				// Remove payment method feature
-
-				break;
-			case 3:
-				quit = true;
-				break;
-			}
-		}
-	}
+        // get option
+        char key = _getch();
+        if ((key == 'w' || key == KEY_UP) && option > 1) {
+            option--;
+        }
+        else if ((key == 's' || key == KEY_DOWN) && option < 3) {
+            option++;
+        }
+        else if (key == ' ' || key == KEY_ENTER) {
+            switch (option) {
+            case 1: {
+                system("cls");
+                cout << "\n\t\t\t\t\t ADD PAYMENT METHOD\n\n";
+                cout << "\t\t\t\t\t 1. CreditCard\n";
+                cout << "\t\t\t\t\t 2. PayPal\n";
+                cout << "\t\t\t\t\t 3. BankTransfer\n";
+                cout << "\t\t\t\t\t Choose payment type (1-3): ";
+                int type;
+                cin >> type;
+                cin.ignore();
+                string methodName;
+                if (type == 1) methodName = "CreditCard";
+                else if (type == 2) methodName = "PayPal";
+                else if (type == 3) methodName = "BankTransfer";
+                else {
+                    cout << "\t\t\t\t\t Invalid type!\n";
+                    system("pause");
+                    break;
+                }
+                PaymentMethodFactory factory;
+                PaymentMethod* method = factory.createPaymentMethod(methodName);
+                if (method) {
+                    customer->addPaymentMethod(method);
+                    cout << "\t\t\t\t\t Payment method added successfully!\n";
+                }
+                else {
+                    cout << "\t\t\t\t\t Failed to add payment method.\n";
+                }
+                system("pause");
+                break;
+            }
+            case 2: {
+                system("cls");
+                auto methods = customer->getPaymentMethods();
+                if (methods.empty()) {
+                    cout << "\t\t\t\t\t No payment methods available to remove.\n";
+                    system("pause");
+                    break;
+                }
+                cout << "\n\t\t\t\t\t REMOVE PAYMENT METHOD\n\n";
+                for (size_t i = 0; i < methods.size(); ++i) {
+                    cout << "\t\t\t\t\t " << i + 1 << ". " << methods[i]->getMethodName() << "\n";
+                }
+                cout << "\t\t\t\t\t " << methods.size() + 1 << ". Back to menu\n";
+                cout << "\t\t\t\t\t Choose payment method to remove (1-" << methods.size() + 1 << "): ";
+                int choice;
+                cin >> choice;
+                cin.ignore();
+                if (choice < 1 || choice > static_cast<int>(methods.size() + 1)) {
+                    cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
+                    system("pause");
+                    break;
+                }
+                if (choice == static_cast<int>(methods.size() + 1)) {
+                    break; // Back to menu
+                }
+                string methodName = methods[choice - 1]->getMethodName();
+                customer->removePaymentMethod(methodName);
+                cout << "\t\t\t\t\t Payment method removed successfully!\n";
+                system("pause");
+                break;
+            }
+            case 3: {
+                quit = true;
+                break;
+            }
+            }
+        }
+    }
 }
 
 //------------------------------------

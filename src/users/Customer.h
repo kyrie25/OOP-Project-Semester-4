@@ -12,5 +12,5 @@ public:
 
     std::string getUserType() const override;
 
-    std::vector<PaymentMethod*> getPaymentMethods() const;
+    const std::vector<PaymentMethod*>& getPaymentMethods() const;
 };
