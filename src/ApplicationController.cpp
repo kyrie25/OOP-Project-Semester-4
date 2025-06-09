@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <limits>
 
 using namespace std;
 
@@ -150,8 +151,10 @@ void ApplicationController::handleLogin()
 		
 		cout << "\t\t\t\t\t\t   Username: ";
 		cin >> username;
+		cin.ignore(); 
 		cout << "\t\t\t\t\t\t   Password: ";
-		cin >> password; 
+		cin >> password;
+		cin.ignore();
 
 		if (username.empty() || password.empty()) {
 			cout << "\t\t\t          Username and password cannot be empty. Please try again.\n";
@@ -259,7 +262,8 @@ void ApplicationController::handleShopMenu(User* user)
 		cout << '\n';
 
 		for (size_t i = 0; i < products.size(); ++i) {
-			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i]->getName() 
+			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i]->getName() << " - "
+			      << products[i]->getType()
 			     << " - Price: $" << products[i]->getPrice() << "\n";
 		}
 
@@ -282,12 +286,16 @@ void ApplicationController::handleShopMenu(User* user)
 		system("cls");
 		cout << "\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
-		cout << "\t\t\t\t\t\t \x1B[33m  -*  PRODUCT DETAILS  *-\33[0m\n\n";
+		cout << "\t\t\t\t\t\t\x1B[33m  PRODUCT DETAILS \33[0m\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
 		cout << '\n';
-
-		products[choice - 1]->display();
+		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
+		cout << "\t\t\t\t\t Product Name: " << products[choice - 1]->getName() << "\n";
+		cout << "\t\t\t\t\t Product Type: " << products[choice - 1]->getType() << "\n";
+		cout << "\t\t\t\t\t Description: " << products[choice - 1]->getDescription() << "\n";
+		cout << "\t\t\t\t\t Price: $" << products[choice - 1]->getPrice() << "\n";
+		cout << "\n\t\t\t\t\t -----------====***====-----------\n\n";
 		
 		//buy or back to shop menu
 		cout << "\n\t\t\t\t\t Would you like to buy this product? (y/n): ";
@@ -369,8 +377,6 @@ void ApplicationController::handlePaymentMethod(User* user)
 
 void ApplicationController::handleSellerMenu(User* user)
 {
-	Seller* seller = dynamic_cast<Seller*>(user);
-
 	int option = 1;
 	bool quit = false;
 	while (!quit)
@@ -410,25 +416,62 @@ void ApplicationController::handleSellerMenu(User* user)
 		else if (key == ' ') {
 			switch (option) {
 			case 1:
-				cout << "\t\t\t\t\t   Managing products feature is not implemented yet.\n";
-				system("pause");
+				handleAddProduct(user);
 				break;
 			case 2:
 				cout << "\t\t\t\t   Viewing sales report feature is not implemented yet.\n";
 				system("pause");
 				break;
 			case 3:
+				cout << "\t\t\t\t   Viewing sales report feature is not implemented yet.\n";
+				system("pause");
+				break;
+			case 4:
 				quit = true;
 				break;
 			}
 		}
 	}
-
 }
 
 void ApplicationController::handleAddProduct(User* user)
 {
-	
+	system("cls");
+	cout << "\n\n";
+	cout <<  "\t\t\t\t\t Enter product type: ";
+	string productType;
+	cin >> productType;
+	cin.ignore();
+	cout << "\t\t\t\t\t Enter product name: ";
+	string productName;
+	getline(cin, productName);
+	cout << "\t\t\t\t\t Enter product description: ";
+	string productDescription;
+	getline(cin, productDescription);
+	cout << "\t\t\t\t\t Enter product price: ";
+	int productPrice;
+	cin >> productPrice;
+	cin.ignore(); 
+	cout << "\t\t\t\t\t Enter product amount: ";
+	int productAmount;
+	cin >> productAmount;
+	cin.ignore();
+
+	ProductFactory productFactory;
+	Product* newProduct = productFactory.createProduct(productType, productName, productDescription, productPrice);
+
+	if (newProduct) {
+		Seller* seller = dynamic_cast<Seller*>(user);
+		if (seller) {
+			seller->addProduct(newProduct, productAmount); 
+			cout << "\t\t\t\t\t Product added successfully!\n";
+		} else {
+			cout << "\t\t\t\t\t Error: User is not a seller.\n";
+		}
+	} else {
+		cout << "\t\t\t\t\t Error: Invalid product type.\n";
+	}
+	system("pause");
 }
 
 void ApplicationController::handleRemoveProduct(User* user)
@@ -452,8 +495,12 @@ ApplicationController::ApplicationController()
 	fstream userFile("users.txt", ios::in);
 	if (userFile.is_open())
 	{
-		string userType, username, password;
-		while (userFile >> userType >> username >> password) {
+		string line;
+		while (getline(userFile, line)) {
+			istringstream iss(line);
+			string userType, username, password;
+			iss >> userType >> username >> password;
+
 			UserFactory userFactory;
 			User* user = userFactory.createUser(userType, username, password);
 			if (user) {
@@ -461,8 +508,6 @@ ApplicationController::ApplicationController()
 			}
 		}
 	}
-
-	userFile.close();
 	//load seller's products
 	fstream productFile("products.txt", ios::in);
 	if (productFile.is_open())

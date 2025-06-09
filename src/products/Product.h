@@ -9,7 +9,7 @@ protected:
     std::string description;
     int price;
 public:
-    Product(std::string _name, std::string _description, int _price);
+    Product(const std::string& _name, const std::string& _description, int _price);
 
     std::string getDescription();
     std::string getName();
