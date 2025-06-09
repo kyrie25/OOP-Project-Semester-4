@@ -12,3 +12,7 @@ int Product::getPrice()
     return price;
 }
 
+std::string Product::getDescription()
+{
+    return description;
+}
