@@ -1,13 +1,15 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 
 class PaymentMethod
 {
 protected:
     std::string methodName;
+
 public:
-    PaymentMethod(const std::string& name);
+    PaymentMethod(const std::string &name);
 
     std::string getMethodName();
 
