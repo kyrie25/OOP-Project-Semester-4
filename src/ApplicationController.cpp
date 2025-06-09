@@ -481,9 +481,28 @@ void ApplicationController::handleRemoveProduct(User* user)
 
 void ApplicationController::handleViewProducts(User* user)
 {
-	// View products feature
+	Seller* seller = dynamic_cast<Seller*>(user);
+	if (seller) {
+		std::vector<Product*> products = seller->getMyProduct();
+		if (products.empty()) {
+			cout << "\t\t\t\t\t No products available.\n";
+		} else {
+			cout << "\t\t\t\t\t Your Products:\n";
+			for (const auto& product : products) {
+				cout << "\t\t\t\t\t - " << product->getName() << " - "
+				     << product->getType() << " - Price: $" << product->getPrice() << "\n";
+			}
+		}
+	} else {
+		cout << "\t\t\t\t\t Error: User is not a seller.\n";
+	}
+	system("pause");
 }
 
+void ApplicationController::handleOrder(User* user)
+{
+	
+}
 
 //------------------------------------
 // CONSTRUCTOR AND DESTRUCTOR
