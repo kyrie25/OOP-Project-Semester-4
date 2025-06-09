@@ -2,6 +2,7 @@
 #include "users/UserFactory.h"
 #include <conio.h>
 #include <iostream>
+#include "payments/PaymentMethodFactory.h"
 
 using namespace std;
 
@@ -329,18 +330,71 @@ void ApplicationController::handlePaymentMethod(User* user)
 		}
 		else if (key == ' ') {
 			switch (option) {
-			case 1:
+			case 1: {
 				system("cls");
-				// Add payment method feature
+				cout << "\n\t\t\t\t\t ADD PAYMENT METHOD\n\n";
+				cout << "\t\t\t\t\t 1. CreditCard\n";
+				cout << "\t\t\t\t\t 2. PayPal\n";
+				cout << "\t\t\t\t\t 3. BankTransfer\n";
+				cout << "\t\t\t\t\t Choose payment type (1-3): ";
+				int type;
+				cin >> type;
+				cin.ignore();
+				string methodName;
+				if (type == 1) methodName = "CreditCard";
+				else if (type == 2) methodName = "PayPal";
+				else if (type == 3) methodName = "BankTransfer";
+				else {
+					cout << "\t\t\t\t\t Invalid type!\n";
+					system("pause");
+					break;
+				}
+				PaymentMethodFactory factory;
+				PaymentMethod* method = factory.createPaymentMethod(methodName);
+				if (method) {
+					customer->addPaymentMethod(method);
+					cout << "\t\t\t\t\t Payment method added successfully!\n";
+				} else {
+					cout << "\t\t\t\t\t Failed to add payment method.\n";
+				}
+				system("pause");
 				break;
-			case 2:
+			}
+			case 2: {
 				system("cls");
-				// Remove payment method feature
-				
+				auto methods = customer->getPaymentMethods();
+				if (methods.empty()) {
+					cout << "\t\t\t\t\t No payment methods available to remove.\n";
+					system("pause");
+					break;
+				}
+				cout << "\n\t\t\t\t\t REMOVE PAYMENT METHOD\n\n";
+				for (size_t i = 0; i < methods.size(); ++i) {
+					cout << "\t\t\t\t\t " << i + 1 << ". " << methods[i]->getMethodName() << "\n";
+				}
+				cout << "\t\t\t\t\t " << methods.size() + 1 << ". Back to menu\n";
+				cout << "\t\t\t\t\t Choose payment method to remove (1-" << methods.size() + 1 << "): ";
+				int choice;
+				cin >> choice;
+				cin.ignore();
+				if (choice < 1 || choice > methods.size() + 1) {
+					cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
+					system("pause");
+					break;
+				}
+				if (choice == methods.size() + 1) {
+					break; // Back to menu
+				}
+				string methodName = methods[choice - 1]->getMethodName();
+				customer->removePaymentMethod(methodName);
+				cout << "\t\t\t\t\t Payment method removed successfully!\n";
+				system("pause");
 				break;
-			case 3:
+			}
+			case 3: {
 				quit = true;
 				break;
+			}
 			}
 		}
 	}
