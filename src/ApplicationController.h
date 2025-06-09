@@ -3,6 +3,7 @@
 #include "products/Product.h"
 #include <string>
 #include <vector>
+
 class ApplicationController 
 {
 private:
@@ -18,10 +19,14 @@ private:
     void handlePaymentMethod(User* user); //add or remove payment methods, (Xuan tri's task)
 
     void handleSellerMenu(User* user); //view products, add or remove products, view orders
-    void handleProduct(User* user); //add or remove products
+    void handleAddProduct(User* user); //add or remove products
+    void handleRemoveProduct(User* user); //remove products
+    void handleViewProducts(User* user); //view products
     void handleOrder(User* user); //view orders.
 
 public:
-    //ApplicationController();
+    ApplicationController();
+    ~ApplicationController();
+
     void run();  
 };

@@ -1,6 +1,7 @@
 #include "Customer.h"
 
-Customer::Customer(const std::string& username, const std::string& password) : User(username, password) {}
+Customer::Customer(const std::string& username, const std::string& password)
+    : User(username, password) {}
 
 void Customer::addPaymentMethod(PaymentMethod* method) {
     for (const auto& existingMethod : paymentMethods) {

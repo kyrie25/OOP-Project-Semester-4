@@ -1,9 +1,12 @@
 #include "ApplicationController.h"
 #include "users/UserFactory.h"
+#include "products/ProductFactory.h"
 #include <conio.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
+
 
 std::vector<Product*> ApplicationController::loadSellerProducts()
 {
@@ -23,6 +26,10 @@ std::vector<Product*> ApplicationController::loadSellerProducts()
 
 	return products;
 }
+
+//------------------------------------
+// REGISTRATION AND LOGIN SECTION
+//------------------------------------
 
 void ApplicationController::handleRegister()
 {
@@ -171,6 +178,12 @@ void ApplicationController::handleLogin()
 		}
 	}
 }
+
+
+//------------------------------------
+// CUSTOMER SECTION
+//------------------------------------
+
 
 void ApplicationController::handleCustomerMenu(User* user)
 {
@@ -346,6 +359,12 @@ void ApplicationController::handlePaymentMethod(User* user)
 	}
 }
 
+
+//------------------------------------
+// SELLER SECTION
+//------------------------------------
+
+
 void ApplicationController::handleSellerMenu(User* user)
 {
 	Seller* seller = dynamic_cast<Seller*>(user);
@@ -358,16 +377,21 @@ void ApplicationController::handleSellerMenu(User* user)
 		cout << "\n\n\n\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
 		if (option == 1)
-			cout << "\t\t\t\t\t    \x1B[33m  -*  MANAGE PRODUCTS  *-\33[0m\n\n";
+			cout << "\t\t\t\t\t      \x1B[33m  -*  ADD PRODUCTS  *-\33[0m\n\n";
 		else
-			cout << "\t\t\t\t\t          MANAGE PRODUCTS\n\n";
+			cout << "\t\t\t\t\t            ADD PRODUCTS\n\n";
 
 		if (option == 2)
-			cout << "\t\t\t\t\t    \x1B[33m  -* VIEW SALES REPORT *-\33[0m\n\n";
+			cout << "\t\t\t\t\t      \x1B[33m  -* REMOVE PRODUCTS *-\33[0m\n\n";
 		else
-			cout << "\t\t\t\t\t         VIEW SALES REPORT\n\n";
+			cout << "\t\t\t\t\t           REMOVE PRODUCTS\n\n";
 
 		if (option == 3)
+			cout << "\t\t\t\t\t     \x1B[33m  -* VIEW SALES REPORT *-\33[0m\n\n";
+		else
+			cout << "\t\t\t\t\t          VIEW SALES REPORT\n\n";
+
+		if (option == 4)
 			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
 		else
 			cout << "\t\t\t\t\t\t       BACK\n\n";
@@ -378,7 +402,7 @@ void ApplicationController::handleSellerMenu(User* user)
 		if (key == 'w' && option > 1) {
 			option--;
 		}
-		else if (key == 's' && option < 3) {
+		else if (key == 's' && option < 4) {
 			option++;
 		}
 		else if (key == ' ') {
@@ -399,6 +423,75 @@ void ApplicationController::handleSellerMenu(User* user)
 	}
 
 }
+
+void ApplicationController::handleAddProduct(User* user)
+{
+	
+}
+
+void ApplicationController::handleRemoveProduct(User* user)
+{
+	// Remove product feature
+}
+
+void ApplicationController::handleViewProducts(User* user)
+{
+	// View products feature
+}
+
+
+//------------------------------------
+// CONSTRUCTOR AND DESTRUCTOR
+//------------------------------------
+
+ApplicationController::ApplicationController()
+{
+	//load user
+	fstream userFile("users.txt");
+	if (userFile.is_open())
+	{
+		string userType, username, password;
+		while (userFile >> userType >> username >> password) {
+			UserFactory userFactory;
+			User* user = userFactory.createUser(userType, username, password);
+			if (user) {
+				users.push_back(user);
+			}
+		}
+	}
+
+	userFile.close();
+	//load seller's products
+	fstream productFile("products.txt");
+	if (productFile.is_open())
+	{
+		string userName, productType, name, description;
+		int price, amount;
+		while (productFile >> userName >> productType >> name >> description >> price) {
+			ProductFactory productFactory;
+			Product* product = productFactory.createProduct(productType, name, description, price);
+			if (product) {
+				for (auto& user : users) {
+					if (user->getUsername() == userName && user->getUserType() == "Seller") {
+						Seller* seller = dynamic_cast<Seller*>(user);
+						if (seller) {
+							seller->addProduct(product, amount);
+						}
+					}
+				}
+			}
+		}
+	}
+	productFile.close();
+	//load customers' payment methods
+
+}
+
+
+
+//------------------------------------
+// MAIN APPLICATION RUN METHOD
+//------------------------------------
 
 
 void ApplicationController::run()
