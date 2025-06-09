@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -447,7 +449,7 @@ void ApplicationController::handleViewProducts(User* user)
 ApplicationController::ApplicationController()
 {
 	//load user
-	fstream userFile("users.txt");
+	fstream userFile("users.txt", ios::in);
 	if (userFile.is_open())
 	{
 		string userType, username, password;
@@ -462,12 +464,20 @@ ApplicationController::ApplicationController()
 
 	userFile.close();
 	//load seller's products
-	fstream productFile("products.txt");
+	fstream productFile("products.txt", ios::in);
 	if (productFile.is_open())
 	{
-		string userName, productType, name, description;
-		int price, amount;
-		while (productFile >> userName >> productType >> name >> description >> price) {
+		std::string line;
+		while (std::getline(productFile, line)) {
+			std::istringstream iss(line);
+			std::string userName, productType, name, description;
+			int price, amount;
+
+			if (!(iss >> userName >> productType >> std::quoted(name) >> std::quoted(description) >> price >> amount)) {
+				std::cerr << "Invalid line: " << line << std::endl;
+				continue;
+			}
+
 			ProductFactory productFactory;
 			Product* product = productFactory.createProduct(productType, name, description, price);
 			if (product) {
@@ -481,13 +491,24 @@ ApplicationController::ApplicationController()
 				}
 			}
 		}
+		productFile.close();
 	}
-	productFile.close();
 	//load customers' payment methods
 
 }
 
-
+ApplicationController::~ApplicationController()
+{
+	//save users to file
+	fstream userFile("users.txt", ios::out);
+	if (userFile.is_open())
+	{
+		for (const auto& user : users) {
+			userFile << user->getUserType() << " " << user->getUsername() << " " << user->getPassword() << "\n";
+		}
+	}
+	userFile.close();
+}
 
 //------------------------------------
 // MAIN APPLICATION RUN METHOD
