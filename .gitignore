@@ -7,3 +7,5 @@
 
 # Ignore Visual Studio Code settings
 .vscode/
+
+*.txt

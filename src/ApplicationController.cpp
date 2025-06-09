@@ -10,17 +10,20 @@
 
 using namespace std;
 
-
-std::vector<Product*> ApplicationController::loadSellerProducts()
+std::vector<Product *> ApplicationController::loadSellerProducts()
 {
-	std::vector<Product*> products;
+	std::vector<Product *> products;
 
-	for (const auto& user : users) {
-		if (user->getUserType() == "Seller") {
-			Seller* seller = dynamic_cast<Seller*>(user);
-			if (seller) {
-				std::vector<Product*> sellerProducts = seller->getMyProduct();
-				for (const auto& product : sellerProducts) {
+	for (const auto &user : users)
+	{
+		if (user->getUserType() == "Seller")
+		{
+			Seller *seller = dynamic_cast<Seller *>(user);
+			if (seller)
+			{
+				std::vector<Product *> sellerProducts = seller->getMyProduct();
+				for (const auto &product : sellerProducts)
+				{
 					products.push_back(product);
 				}
 			}
@@ -36,7 +39,8 @@ std::vector<Product*> ApplicationController::loadSellerProducts()
 
 void ApplicationController::handleRegister()
 {
-	while (true) {
+	while (true)
+	{
 		system("cls");
 		cout << "\n\n";
 		cout << "\t\t\t\t  \033[93m  /$$$$$$  /$$                           /$$ /$$\033[0m" << '\n';
@@ -61,27 +65,32 @@ void ApplicationController::handleRegister()
 		cout << "\t\t\t\t\t\t   Password: ";
 		getline(cin, password);
 
-		//check if username and password have space
-		if (username.find(' ') != string::npos || password.find(' ') != string::npos) {
+		// check if username and password have space
+		if (username.find(' ') != string::npos || password.find(' ') != string::npos)
+		{
 			cout << "\t\t\t     Username and password cannot contain spaces. Please try again.\n";
 			system("pause");
 			continue;
 		}
 
-		if (username.empty() || password.empty()) {
+		if (username.empty() || password.empty())
+		{
 			cout << "\t\t\t     Username and password cannot be empty. Please try again.\n";
 			system("pause");
 			continue;
 		}
-		
-		for (const auto& user : users) {
-			if (user->getUsername() == username) {
+
+		for (const auto &user : users)
+		{
+			if (user->getUsername() == username)
+			{
 				isValid = false;
 				break;
 			}
 		}
 
-		if (!isValid) {
+		if (!isValid)
+		{
 			cout << "\t\t\t     Username already exists. Please choose a different username.\n";
 			system("pause");
 			continue;
@@ -102,7 +111,7 @@ void ApplicationController::handleRegister()
 		cout << "\t\t\t\t  \033[93m                              |__/               \033[0m" << '\n';
 		cout << "\n\n\n";
 
-		//choose user type
+		// choose user type
 		cout << "\t\t\t\t          Please choose your user type:\n\n";
 		cout << "\t\t\t\t\t\t   1. Customer\n";
 		cout << "\t\t\t\t\t\t   2. Seller\n";
@@ -110,15 +119,16 @@ void ApplicationController::handleRegister()
 		int userType;
 		cout << "\t\t\t\t          Enter your choice (1 or 2): ";
 		cin >> userType;
-		cin.ignore(); 
-		if (userType != 1 && userType != 2) {
+		cin.ignore();
+		if (userType != 1 && userType != 2)
+		{
 			cout << "\t\t\t     Invalid choice. Please try again.\n";
 			system("pause");
 			continue;
 		}
 
 		UserFactory userFactory;
-		User* newUser = userFactory.createUser(userType == 1 ? "Customer" : "Seller", username, password);
+		User *newUser = userFactory.createUser(userType == 1 ? "Customer" : "Seller", username, password);
 
 		users.push_back(newUser);
 		cout << "\t\t\t\t     Registration successful! Welcome, " << username << "!\n";
@@ -131,7 +141,8 @@ void ApplicationController::handleRegister()
 void ApplicationController::handleLogin()
 {
 	char key;
-    while (true) {
+	while (true)
+	{
 		system("cls");
 		cout << "\n\n";
 		cout << "\t\t\t\t  \033[93m  /$$$$$$  /$$                           /$$ /$$\033[0m" << '\n';
@@ -148,49 +159,54 @@ void ApplicationController::handleLogin()
 		cout << "\n\n\n";
 		cout << "\t\t\t          Please enter your username and password to log in.\n\n\n";
 		string username, password;
-		
+
 		cout << "\t\t\t\t\t\t   Username: ";
 		cin >> username;
-		cin.ignore(); 
+		cin.ignore();
 		cout << "\t\t\t\t\t\t   Password: ";
 		cin >> password;
 		cin.ignore();
 
-		if (username.empty() || password.empty()) {
+		if (username.empty() || password.empty())
+		{
 			cout << "\t\t\t          Username and password cannot be empty. Please try again.\n";
 			system("pause");
 			continue;
 		}
-		for (const auto& user : users) {
-			if (user->getUsername() == username && user->checkPassword(password)) {
+		for (const auto &user : users)
+		{
+			if (user->getUsername() == username && user->checkPassword(password))
+			{
 				cout << "\t\t\t\t\t\t  Login successful!\n";
 				system("pause");
 
-				if (user->getUserType() == "Customer") {
+				if (user->getUserType() == "Customer")
+				{
 
 					handleCustomerMenu(user);
-				} else if (user->getUserType() == "Seller") {
+				}
+				else if (user->getUserType() == "Seller")
+				{
 					handleSellerMenu(user);
-				} 
-					
+				}
+
 				return;
 			}
 		}
 		cout << "\t\t\t          Invalid username or password. Please try again.\n";
 		key = _getch();
-		if (key == 27) { 
+		if (key == KEY_ESC)
+		{
 			return;
 		}
 	}
 }
 
-
 //------------------------------------
 // CUSTOMER SECTION
 //------------------------------------
 
-
-void ApplicationController::handleCustomerMenu(User* user)
+void ApplicationController::handleCustomerMenu(User *user)
 {
 	int option = 1;
 	bool quit = false;
@@ -216,16 +232,20 @@ void ApplicationController::handleCustomerMenu(User* user)
 			cout << "\t\t\t\t\t\t       BACK\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-		//get option
+		// get option
 		char key = _getch();
-		if (key == 'w' && option > 1) {
+		if ((key == 'w' || key == KEY_UP) && option > 1) // up arrow key
+		{
 			option--;
 		}
-		else if (key == 's' && option < 3) {
+		else if ((key == 's' || key == KEY_DOWN) && option < 3) // down arrow key
+		{
 			option++;
 		}
-		else if (key == ' ') {
-			switch (option) {
+		else if (key == ' ' || key == KEY_ENTER) // space or enter key
+		{
+			switch (option)
+			{
 			case 1:
 				handleShopMenu(user);
 				break;
@@ -241,9 +261,10 @@ void ApplicationController::handleCustomerMenu(User* user)
 	}
 }
 
-void ApplicationController::handleShopMenu(User* user)
+void ApplicationController::handleShopMenu(User *user)
 {
-	while (true) {
+	while (true)
+	{
 		system("cls");
 		cout << "\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
@@ -251,9 +272,10 @@ void ApplicationController::handleShopMenu(User* user)
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
 		// Display products and allow user to select a product
-		std::vector<Product*> products = loadSellerProducts();
-		
-		if (products.empty()) {
+		std::vector<Product *> products = loadSellerProducts();
+
+		if (products.empty())
+		{
 			cout << "\t\t\t\t\t No products available in the shop.\n";
 			system("pause");
 			return;
@@ -261,28 +283,53 @@ void ApplicationController::handleShopMenu(User* user)
 
 		cout << '\n';
 
-		for (size_t i = 0; i < products.size(); ++i) {
+		for (size_t i = 0; i < products.size(); ++i)
+		{
 			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i]->getName() << " - "
-			      << products[i]->getType()
-			     << " - Price: $" << products[i]->getPrice() << "\n";
+				 << products[i]->getType()
+				 << " - Price: $" << products[i]->getPrice() << "\n";
 		}
 
-		cout << "\t\t\t\t\t " << products.size() + 1 << ". Back to menu\n";
+		cout << "\t\t\t\t\t -----------====***====-----------\n";
+		cout << "\t\t\t\t\t " << "x: Back to menu\n";
 		cout << "\t\t\t\t\t Please select a product by number: ";
-		int choice;
-		cin >> choice;
-		cin.ignore(); 
+		string input;
+		getline(cin, input);
+		if (input == "x")
+		{
+			return;
+		}
 
-		if (choice < 1 || choice > products.size() + 1) {
+		int choice = 0;
+		try
+		{
+			choice = std::stoi(input);
+		}
+		catch (const std::invalid_argument &)
+		{
+			cout << "\t\t\t\t\t Invalid input. Please enter a number.\n";
+			system("pause");
+			continue;
+		}
+		catch (const std::out_of_range &)
+		{
+			cout << "\t\t\t\t\t Number out of range. Please try again.\n";
+			system("pause");
+			continue;
+		}
+
+		if (choice < 1 || choice > products.size() + 1)
+		{
 			cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
 			system("pause");
 			continue;
 		}
-		if (choice == products.size() + 1) {
+		if (choice == products.size() + 1)
+		{
 			return;
 		}
 
-		//display selected product details
+		// display selected product details
 		system("cls");
 		cout << "\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
@@ -296,27 +343,29 @@ void ApplicationController::handleShopMenu(User* user)
 		cout << "\t\t\t\t\t Description: " << products[choice - 1]->getDescription() << "\n";
 		cout << "\t\t\t\t\t Price: $" << products[choice - 1]->getPrice() << "\n";
 		cout << "\n\t\t\t\t\t -----------====***====-----------\n\n";
-		
-		//buy or back to shop menu
+
+		// buy or back to shop menu
 		cout << "\n\t\t\t\t\t Would you like to buy this product? (y/n): ";
 		char buyChoice;
 		cin >> buyChoice;
 		cin.ignore();
-		if (buyChoice == 'y' || buyChoice == 'Y') {
-			//choose payment method
-
-		} else if (buyChoice == 'n' || buyChoice == 'N') {
+		if (buyChoice == 'y' || buyChoice == 'Y')
+		{
+			// choose payment method
+		}
+		else if (buyChoice == 'n' || buyChoice == 'N')
+		{
 			// Back to shop menu
-			
-		} else {
-			
+		}
+		else
+		{
 		}
 	}
 }
 
-void ApplicationController::handlePaymentMethod(User* user)
+void ApplicationController::handlePaymentMethod(User *user)
 {
-	Customer* customer = dynamic_cast<Customer*>(user);
+	Customer *customer = dynamic_cast<Customer *>(user);
 
 	int option = 1;
 	bool quit = false;
@@ -342,16 +391,20 @@ void ApplicationController::handlePaymentMethod(User* user)
 			cout << "\t\t\t\t\t\t       BACK\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-		//get option
+		// get option
 		char key = _getch();
-		if (key == 'w' && option > 1) {
+		if ((key == 'w' || key == KEY_UP) && option > 1)
+		{
 			option--;
 		}
-		else if (key == 's' && option < 3) {
+		else if ((key == 's' || key == KEY_DOWN) && option < 3)
+		{
 			option++;
 		}
-		else if (key == ' ') {
-			switch (option) {
+		else if (key == ' ' || key == KEY_ENTER)
+		{
+			switch (option)
+			{
 			case 1:
 				system("cls");
 				// Add payment method feature
@@ -359,7 +412,7 @@ void ApplicationController::handlePaymentMethod(User* user)
 			case 2:
 				system("cls");
 				// Remove payment method feature
-				
+
 				break;
 			case 3:
 				quit = true;
@@ -369,13 +422,11 @@ void ApplicationController::handlePaymentMethod(User* user)
 	}
 }
 
-
 //------------------------------------
 // SELLER SECTION
 //------------------------------------
 
-
-void ApplicationController::handleSellerMenu(User* user)
+void ApplicationController::handleSellerMenu(User *user)
 {
 	int option = 1;
 	bool quit = false;
@@ -405,16 +456,20 @@ void ApplicationController::handleSellerMenu(User* user)
 			cout << "\t\t\t\t\t\t       BACK\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-		//get option
+		// get option
 		char key = _getch();
-		if (key == 'w' && option > 1) {
+		if ((key == 'w' || key == KEY_UP) && option > 1)
+		{
 			option--;
 		}
-		else if (key == 's' && option < 4) {
+		else if ((key == 's' || key == KEY_DOWN) && option < 4)
+		{
 			option++;
 		}
-		else if (key == ' ') {
-			switch (option) {
+		else if (key == ' ' || key == KEY_ENTER)
+		{
+			switch (option)
+			{
 			case 1:
 				handleAddProduct(user);
 				break;
@@ -434,11 +489,11 @@ void ApplicationController::handleSellerMenu(User* user)
 	}
 }
 
-void ApplicationController::handleAddProduct(User* user)
+void ApplicationController::handleAddProduct(User *user)
 {
 	system("cls");
 	cout << "\n\n";
-	cout <<  "\t\t\t\t\t Enter product type: ";
+	cout << "\t\t\t\t\t Enter product type: ";
 	string productType;
 	cin >> productType;
 	cin.ignore();
@@ -451,57 +506,69 @@ void ApplicationController::handleAddProduct(User* user)
 	cout << "\t\t\t\t\t Enter product price: ";
 	int productPrice;
 	cin >> productPrice;
-	cin.ignore(); 
+	cin.ignore();
 	cout << "\t\t\t\t\t Enter product amount: ";
 	int productAmount;
 	cin >> productAmount;
 	cin.ignore();
 
 	ProductFactory productFactory;
-	Product* newProduct = productFactory.createProduct(productType, productName, productDescription, productPrice);
+	Product *newProduct = productFactory.createProduct(productType, productName, productDescription, productPrice);
 
-	if (newProduct) {
-		Seller* seller = dynamic_cast<Seller*>(user);
-		if (seller) {
-			seller->addProduct(newProduct, productAmount); 
+	if (newProduct)
+	{
+		Seller *seller = dynamic_cast<Seller *>(user);
+		if (seller)
+		{
+			seller->addProduct(newProduct, productAmount);
 			cout << "\t\t\t\t\t Product added successfully!\n";
-		} else {
+		}
+		else
+		{
 			cout << "\t\t\t\t\t Error: User is not a seller.\n";
 		}
-	} else {
+	}
+	else
+	{
 		cout << "\t\t\t\t\t Error: Invalid product type.\n";
 	}
 	system("pause");
 }
 
-void ApplicationController::handleRemoveProduct(User* user)
+void ApplicationController::handleRemoveProduct(User *user)
 {
 	// Remove product feature
 }
 
-void ApplicationController::handleViewProducts(User* user)
+void ApplicationController::handleViewProducts(User *user)
 {
-	Seller* seller = dynamic_cast<Seller*>(user);
-	if (seller) {
-		std::vector<Product*> products = seller->getMyProduct();
-		if (products.empty()) {
+	Seller *seller = dynamic_cast<Seller *>(user);
+	if (seller)
+	{
+		std::vector<Product *> products = seller->getMyProduct();
+		if (products.empty())
+		{
 			cout << "\t\t\t\t\t No products available.\n";
-		} else {
+		}
+		else
+		{
 			cout << "\t\t\t\t\t Your Products:\n";
-			for (const auto& product : products) {
+			for (const auto &product : products)
+			{
 				cout << "\t\t\t\t\t - " << product->getName() << " - "
-				     << product->getType() << " - Price: $" << product->getPrice() << "\n";
+					 << product->getType() << " - Price: $" << product->getPrice() << "\n";
 			}
 		}
-	} else {
+	}
+	else
+	{
 		cout << "\t\t\t\t\t Error: User is not a seller.\n";
 	}
 	system("pause");
 }
 
-void ApplicationController::handleOrder(User* user)
+void ApplicationController::handleOrder(User *user)
 {
-	
 }
 
 //------------------------------------
@@ -510,45 +577,52 @@ void ApplicationController::handleOrder(User* user)
 
 ApplicationController::ApplicationController()
 {
-	//load user
+	// load user
 	fstream userFile("users.txt", ios::in);
 	if (userFile.is_open())
 	{
 		string line;
-		while (getline(userFile, line)) {
+		while (getline(userFile, line))
+		{
 			istringstream iss(line);
 			string userType, username, password;
 			iss >> userType >> username >> password;
 
 			UserFactory userFactory;
-			User* user = userFactory.createUser(userType, username, password);
-			if (user) {
+			User *user = userFactory.createUser(userType, username, password);
+			if (user)
+			{
 				users.push_back(user);
 			}
 		}
 	}
-	//load seller's products
+	// load seller's products
 	fstream productFile("products.txt", ios::in);
 	if (productFile.is_open())
 	{
 		std::string line;
-		while (std::getline(productFile, line)) {
+		while (std::getline(productFile, line))
+		{
 			std::istringstream iss(line);
 			std::string userName, productType, name, description;
 			int price, amount;
 
-			if (!(iss >> userName >> productType >> std::quoted(name) >> std::quoted(description) >> price >> amount)) {
-				std::cerr << "Invalid line: " << line << std::endl;
+			if (!(iss >> userName >> productType >> std::quoted(name) >> std::quoted(description) >> price >> amount))
+			{
 				continue;
 			}
 
 			ProductFactory productFactory;
-			Product* product = productFactory.createProduct(productType, name, description, price);
-			if (product) {
-				for (auto& user : users) {
-					if (user->getUsername() == userName && user->getUserType() == "Seller") {
-						Seller* seller = dynamic_cast<Seller*>(user);
-						if (seller) {
+			Product *product = productFactory.createProduct(productType, name, description, price);
+			if (product)
+			{
+				for (auto &user : users)
+				{
+					if (user->getUsername() == userName && user->getUserType() == "Seller")
+					{
+						Seller *seller = dynamic_cast<Seller *>(user);
+						if (seller)
+						{
 							seller->addProduct(product, amount);
 						}
 					}
@@ -557,49 +631,75 @@ ApplicationController::ApplicationController()
 		}
 		productFile.close();
 	}
-	//load customers' payment methods
-
+	// load customers' payment methods
 }
 
 ApplicationController::~ApplicationController()
 {
-	//save users to file
+	// save users to file
 	fstream userFile("users.txt", ios::out);
 	if (userFile.is_open())
 	{
-		for (const auto& user : users) {
+		for (const auto &user : users)
+		{
 			userFile << user->getUserType() << " " << user->getUsername() << " " << user->getPassword() << "\n";
 		}
 	}
 	userFile.close();
+
+	// save products to file
+	fstream productFile("products.txt", ios::out);
+	if (productFile.is_open())
+	{
+		for (const auto &user : users)
+		{
+			if (user->getUserType() == "Seller")
+			{
+				Seller *seller = dynamic_cast<Seller *>(user);
+				if (seller)
+				{
+					std::vector<std::pair<Product *, int>> products = seller->getMyProductDetails();
+					for (const auto &product : products)
+					{
+						productFile << user->getUsername() << " " << product.first->getType() << " "
+									<< std::quoted(product.first->getName()) << " "
+									<< std::quoted(product.first->getDescription()) << " "
+									<< product.first->getPrice() << " "
+									<< product.second // amount
+									<< "\n";
+					}
+				}
+			}
+		}
+	}
 }
 
 //------------------------------------
 // MAIN APPLICATION RUN METHOD
 //------------------------------------
 
-
 void ApplicationController::run()
 {
-    int option = 1;
+	int option = 1;
 
 	bool quit = false;
 
-	while (!quit) {
+	while (!quit)
+	{
 		system("cls");
 		cout << "\n\n";
-        cout << "\t\t\t\t  \033[93m  /$$$$$$  /$$                           /$$ /$$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m /$$__  $$| $$                          |__/|__/\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$  /$$ /$$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$| $$| $$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$| $$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$| $$| $$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/| $$| $$\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m \\______/ |__/  |__/ \\______/ | $$____/ |__/|__/\033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m                              | $$               \033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m                              | $$               \033[0m" << '\n';
-        cout << "\t\t\t\t  \033[93m                              |__/               \033[0m" << '\n';
-        cout << "\n\n\n";
+		cout << "\t\t\t\t  \033[93m  /$$$$$$  /$$                           /$$ /$$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m /$$__  $$| $$                          |__/|__/\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$  /$$ /$$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m|  $$$$$$ | $$__  $$ /$$__  $$ /$$__  $$| $$| $$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m \\____  $$| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$| $$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m /$$  \\ $$| $$  | $$| $$  | $$| $$  | $$| $$| $$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m|  $$$$$$/| $$  | $$|  $$$$$$/| $$$$$$$/| $$| $$\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m \\______/ |__/  |__/ \\______/ | $$____/ |__/|__/\033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m                              | $$               \033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m                              | $$               \033[0m" << '\n';
+		cout << "\t\t\t\t  \033[93m                              |__/               \033[0m" << '\n';
+		cout << "\n\n\n";
 
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
 		if (option == 1)
@@ -618,18 +718,21 @@ void ApplicationController::run()
 			cout << "\t\t\t\t\t\t       QUIT\n\n";
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
-
-		//get option
+		// get option
 		char key = _getch();
 
-		if (key == 'w' && option > 1) {
+		if ((key == 'w' || key == KEY_UP) && option > 1)
+		{
 			option--;
 		}
-		else if (key == 's' && option < 3) {
+		else if ((key == 's' || key == KEY_DOWN) && option < 3)
+		{
 			option++;
 		}
-		else if (key == ' ') {
-			switch (option) {
+		else if (key == ' ' || key == KEY_ENTER)
+		{
+			switch (option)
+			{
 			case 1:
 				handleLogin();
 				break;
@@ -637,7 +740,7 @@ void ApplicationController::run()
 				handleRegister();
 				break;
 			case 3:
-				quit = true;	
+				quit = true;
 				cout << "Exiting the application. Goodbye!\n";
 				system("pause");
 				break;
