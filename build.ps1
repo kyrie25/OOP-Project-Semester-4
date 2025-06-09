@@ -5,4 +5,4 @@ if ($null -eq $Output) {
 }
 
 $files = Get-ChildItem -Recurse -Filter *.cpp -Path .\src | ForEach-Object { "$($_.FullName)" }
-g++ -g $files -o $Output
+g++ -fdiagnostics-color=always $files -o $Output

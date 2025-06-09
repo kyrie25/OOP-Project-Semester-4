@@ -6,4 +6,4 @@ for /r src %%i in (*.cpp) do (
     set files=!files! "%%i"
 )
 
-g++ %files% -o app.exe
+g++ -fdiagnostics-color=always %files% -o app.exe
