@@ -1,4 +1,5 @@
 #include "Seller.h"
+#include <algorithm>
 
 Seller::Seller(const std::string &username, const std::string &password)
     : User(username, password) {}
@@ -26,6 +27,26 @@ void Seller::removeProduct(std::string name)
         {
             delete it->first;
             myProduct.erase(it);
+            return;
+        }
+    }
+}
+
+void Seller::sellProduct(std::string name, int amount)
+{
+    for (auto &item : myProduct)
+    {
+        if (item.first->getName() == name)
+        {
+            if (item.second >= amount)
+            {
+                item.second -= amount;
+                if (item.second <= 0)
+                {
+                    delete item.first;
+                    myProduct.erase(std::remove(myProduct.begin(), myProduct.end(), item), myProduct.end());
+                }
+            }
             return;
         }
     }

@@ -11,9 +11,9 @@
 
 using namespace std;
 
-std::vector<Product *> ApplicationController::loadSellerProducts()
+std::vector<std::pair<Seller*, std::pair<Product*, int>>> ApplicationController::loadSellerProducts()
 {
-	std::vector<Product *> products;
+	std::vector<std::pair<Seller*, std::pair<Product*, int>>> sellerProducts;
 
 	for (const auto &user : users)
 	{
@@ -22,17 +22,19 @@ std::vector<Product *> ApplicationController::loadSellerProducts()
 			Seller *seller = dynamic_cast<Seller *>(user);
 			if (seller)
 			{
-				std::vector<Product *> sellerProducts = seller->getMyProduct();
-				for (const auto &product : sellerProducts)
+				std::vector<std::pair<Product *, int>> products = seller->getMyProductDetails();
+				for (const auto &product : products)
 				{
-					products.push_back(product);
+					sellerProducts.push_back({seller, product});
 				}
 			}
 		}
 	}
 
-	return products;
+	return sellerProducts;
 }
+
+
 
 //------------------------------------
 // REGISTRATION AND LOGIN SECTION
@@ -252,7 +254,6 @@ void ApplicationController::handleCustomerMenu(User *user)
 				break;
 			case 2:
 				handlePaymentMethod(user);
-				system("pause");
 				break;
 			case 3:
 				quit = true;
@@ -273,7 +274,7 @@ void ApplicationController::handleShopMenu(User *user)
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
 
 		// Display products and allow user to select a product
-		std::vector<Product *> products = loadSellerProducts();
+		std::vector<pair<Seller*, pair<Product*, int>>> products = loadSellerProducts();
 
 		if (products.empty())
 		{
@@ -286,21 +287,20 @@ void ApplicationController::handleShopMenu(User *user)
 
 		for (size_t i = 0; i < products.size(); ++i)
 		{
-			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i]->getName() << " - "
-				 << products[i]->getType()
-				 << " - Price: $" << products[i]->getPrice() << "\n";
+			cout << "\t\t\t\t\t " << i + 1 << ". " << products[i].second.first->getName() << " - "
+				 << products[i].second.first->getType()
+				 << " - Price: $" << products[i].second.first->getPrice() << "\n";
 		}
 
 		cout << "\t\t\t\t\t -----------====***====-----------\n";
-		cout << "\t\t\t\t\t " << "x: Back to menu\n";
+		cout << "\t\t\t\t\t " << 'x' << ". Back to menu\n";
 		cout << "\t\t\t\t\t Please select a product by number: ";
 		string input;
 		getline(cin, input);
-		if (input == "x")
+		if (input == "x" || input == "X" || input == to_string(products.size() + 1))
 		{
-			return;
+			return; // Back to menu
 		}
-
 		int choice = 0;
 		try
 		{
@@ -318,17 +318,13 @@ void ApplicationController::handleShopMenu(User *user)
 			system("pause");
 			continue;
 		}
-
 		if (choice < 1 || choice > products.size() + 1)
 		{
 			cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
 			system("pause");
 			continue;
 		}
-		if (choice == products.size() + 1)
-		{
-			return;
-		}
+		
 
 		// display selected product details
 		system("cls");
@@ -339,10 +335,12 @@ void ApplicationController::handleShopMenu(User *user)
 
 		cout << '\n';
 		cout << "\t\t\t\t\t -----------====***====-----------\n\n";
-		cout << "\t\t\t\t\t Product Name: " << products[choice - 1]->getName() << "\n";
-		cout << "\t\t\t\t\t Product Type: " << products[choice - 1]->getType() << "\n";
-		cout << "\t\t\t\t\t Description: " << products[choice - 1]->getDescription() << "\n";
-		cout << "\t\t\t\t\t Price: $" << products[choice - 1]->getPrice() << "\n";
+		cout << "\t\t\t\t\t Product Name: " << products[choice - 1].second.first->getName() << "\n";
+		cout << "\t\t\t\t\t Product Type: " << products[choice - 1].second.first->getType() << "\n";
+		cout << "\t\t\t\t\t Product Description: " << products[choice - 1].second.first->getDescription() << "\n";
+		cout << "\t\t\t\t\t Product Price: $" << products[choice - 1].second.first->getPrice() << "\n";
+		cout << "\t\t\t\t\t Product Amount: " << products[choice - 1].second.second << "\n";
+		cout << "\t\t\t\t\t Seller: " << products[choice - 1].first->getUsername() << "\n";
 		cout << "\n\t\t\t\t\t -----------====***====-----------\n\n";
 
 		// buy or back to shop menu
@@ -353,6 +351,17 @@ void ApplicationController::handleShopMenu(User *user)
 		if (buyChoice == 'y' || buyChoice == 'Y')
 		{
 			// choose payment method
+
+
+			// remove product from seller's products if amount is 0 then remove from seller's products
+			
+			Seller *seller = products[choice - 1].first;
+			seller->sellProduct(products[choice - 1].second.first->getName(), 1);
+			products[choice - 1].second.second--;
+			if (products[choice - 1].second.second <= 0)
+			{
+				products.erase(products.begin() + choice - 1); 
+			}
 		}
 		else if (buyChoice == 'n' || buyChoice == 'N')
 		{
@@ -502,11 +511,6 @@ void ApplicationController::handleSellerMenu(User *user)
 			cout << "\t\t\t\t\t           REMOVE PRODUCTS\n\n";
 
 		if (option == 3)
-			cout << "\t\t\t\t\t     \x1B[33m  -* VIEW SALES REPORT *-\33[0m\n\n";
-		else
-			cout << "\t\t\t\t\t          VIEW SALES REPORT\n\n";
-
-		if (option == 4)
 			cout << "\t\t\t\t\t\t \x1B[33m  -*  BACK  *-\33[0m\n\n";
 		else
 			cout << "\t\t\t\t\t\t       BACK\n\n";
@@ -518,7 +522,7 @@ void ApplicationController::handleSellerMenu(User *user)
 		{
 			option--;
 		}
-		else if ((key == 's' || key == KEY_DOWN) && option < 4)
+		else if ((key == 's' || key == KEY_DOWN) && option < 3)
 		{
 			option++;
 		}
@@ -534,10 +538,6 @@ void ApplicationController::handleSellerMenu(User *user)
 				system("pause");
 				break;
 			case 3:
-				cout << "\t\t\t\t   Viewing sales report feature is not implemented yet.\n";
-				system("pause");
-				break;
-			case 4:
 				quit = true;
 				break;
 			}

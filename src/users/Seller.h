@@ -13,7 +13,8 @@ public:
 
     void addProduct(Product *product, int amount);
     void removeProduct(std::string name);
-
+    void sellProduct(std::string name, int amount);
+    
     std::string getUserType() const;
 
     std::vector<Product *> getMyProduct();

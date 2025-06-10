@@ -1,5 +1,6 @@
 #pragma once
 #include "users/User.h"
+#include "users/Seller.h"
 #include "products/Product.h"
 #include <string>
 #include <vector>
@@ -19,7 +20,7 @@ class ApplicationController
 private:
     std::vector<User *> users;
 
-    std::vector<Product *> loadSellerProducts();
+    std::vector<std::pair<Seller*, std::pair<Product*, int>>> loadSellerProducts();
 
     void handleLogin();
     void handleRegister();
