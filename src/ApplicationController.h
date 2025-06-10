@@ -32,8 +32,6 @@ private:
     void handleSellerMenu(User *user);    // view products, add or remove products, view orders
     void handleAddProduct(User *user);    // add or remove products
     void handleRemoveProduct(User *user); // remove products
-    void handleViewProducts(User *user);  // view products
-    void handleOrder(User *user);         // view orders.
 
 public:
     ApplicationController();

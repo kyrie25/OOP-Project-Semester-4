@@ -657,11 +657,6 @@ void ApplicationController::handleRemoveProduct(User *user)
 	system("pause");
 }
 
-void ApplicationController::handleOrder(User *user)
-{
-	
-}
-
 //------------------------------------
 // CONSTRUCTOR AND DESTRUCTOR
 //------------------------------------
