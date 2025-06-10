@@ -4,6 +4,15 @@
 Seller::Seller(const std::string &username, const std::string &password)
     : User(username, password) {}
 
+Seller::~Seller()
+{
+    for (auto &item : myProduct)
+    {
+        delete item.first;
+    }
+    myProduct.clear();
+}
+
 void Seller::addProduct(Product *product, int amount)
 {
     for (auto &item : myProduct)

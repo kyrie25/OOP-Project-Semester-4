@@ -3,14 +3,16 @@
 class Customer : public User
 {
 private:
-    std::vector<PaymentMethod*> paymentMethods;
-public:
-    Customer(const std::string& username, const std::string& password);
+    std::vector<PaymentMethod *> paymentMethods;
 
-    void addPaymentMethod(PaymentMethod* method);
-    void removePaymentMethod(const std::string& methodName);
+public:
+    Customer(const std::string &username, const std::string &password);
+    ~Customer();
+
+    void addPaymentMethod(PaymentMethod *method);
+    void removePaymentMethod(const std::string &methodName);
 
     std::string getUserType() const override;
 
-    const std::vector<PaymentMethod*>& getPaymentMethods() const;
+    const std::vector<PaymentMethod *> &getPaymentMethods() const;
 };
