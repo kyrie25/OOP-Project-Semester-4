@@ -534,8 +534,7 @@ void ApplicationController::handleSellerMenu(User *user)
 				handleAddProduct(user);
 				break;
 			case 2:
-				cout << "\t\t\t\t   Viewing sales report feature is not implemented yet.\n";
-				system("pause");
+				handleRemoveProduct(user);
 				break;
 			case 3:
 				quit = true;
@@ -593,38 +592,74 @@ void ApplicationController::handleAddProduct(User *user)
 
 void ApplicationController::handleRemoveProduct(User *user)
 {
-	// Remove product feature
-}
-
-void ApplicationController::handleViewProducts(User *user)
-{
+	system("cls");
+	// Display seller's products
 	Seller *seller = dynamic_cast<Seller *>(user);
-	if (seller)
-	{
-		std::vector<Product *> products = seller->getMyProduct();
-		if (products.empty())
-		{
-			cout << "\t\t\t\t\t No products available.\n";
-		}
-		else
-		{
-			cout << "\t\t\t\t\t Your Products:\n";
-			for (const auto &product : products)
-			{
-				cout << "\t\t\t\t\t - " << product->getName() << " - "
-					 << product->getType() << " - Price: $" << product->getPrice() << "\n";
-			}
-		}
-	}
-	else
+	if (!seller)
 	{
 		cout << "\t\t\t\t\t Error: User is not a seller.\n";
+		system("pause");
+		return;
 	}
+	//get products details
+	auto products = seller->getMyProductDetails();
+	if (products.empty())
+	{
+		cout << "\t\t\t\t\t No products available to remove.\n";
+		system("pause");
+		return;
+	}
+	cout << "\n\t\t\t\t\t REMOVE PRODUCTS\n\n";
+	for (size_t i = 0; i < products.size(); ++i)
+	{
+		cout << "\t\t\t\t\t " << i + 1 << ". " << products[i].first->getName() << " - "
+			 << products[i].first->getType()
+			 << " - Price: $" << products[i].first->getPrice() << "\n";
+	}
+	cout << "\t\t\t\t\t " << 'x' << ". Back to menu\n";
+	cout << "\t\t\t\t\t Please select a product to remove (1-" << products.size() << "): ";
+	string input;
+	getline(cin, input);
+	int choice = 0;
+	try
+	{
+		choice = std::stoi(input);
+	}
+	catch (const std::invalid_argument &)
+	{
+		cout << "\t\t\t\t\t Invalid input. Please enter a number.\n";
+		system("pause");
+		return;
+	}
+	catch (const std::out_of_range &)
+	{
+		cout << "\t\t\t\t\t Number out of range. Please try again.\n";
+		system("pause");
+		return;
+	}
+
+	if (choice < 1 || choice > products.size() + 1)
+	{
+		cout << "\t\t\t\t\t Invalid choice. Please try again.\n";
+		system("pause");
+		return;
+	}
+
+	if (choice == 'x' || choice == 'X') // Back to menu
+	{
+		return;
+	}
+
+	// Remove the selected product
+	string productName = products[choice - 1].first->getName();
+	seller->removeProduct(productName);
+	cout << "\t\t\t\t\t Product removed successfully!\n";
 	system("pause");
 }
 
 void ApplicationController::handleOrder(User *user)
 {
+	
 }
 
 //------------------------------------
